@@ -4,8 +4,8 @@ FROM archivebox/archivebox:0.8.5rc51
 USER root
 
 # Install Chrome as root
-RUN wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add - && \
-    echo 'deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main' > /etc/apt/sources.list.d/google-chrome.list && \
+RUN wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | gpg --dearmor -o /usr/share/keyrings/google-chrome-keyring.gpg && \
+    echo 'deb [arch=amd64 signed-by=/usr/share/keyrings/google-chrome-keyring.gpg] http://dl.google.com/linux/chrome/deb/ stable main' > /etc/apt/sources.list.d/google-chrome.list && \
     apt update && \
     apt install -y google-chrome-stable && \
     rm -rf /var/lib/apt/lists/*
@@ -13,5 +13,5 @@ RUN wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key
 # Switch back to archivebox user
 USER archivebox
 
-# Default command (can be overridden in docker-compose)
+# Keep the original entrypoint, only override the default command
 CMD ["archivebox", "server", "--quick-init", "0.0.0.0:8024"]
