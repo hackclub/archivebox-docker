@@ -10,8 +10,12 @@ RUN wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | gpg --d
     apt install -y google-chrome-stable && \
     rm -rf /var/lib/apt/lists/*
 
-# Let the entrypoint script handle user switching
-# USER archivebox
+# Copy custom entrypoint that handles both shell and archivebox commands
+COPY --chown=root:root --chmod=755 entrypoint.sh /custom_entrypoint.sh
 
-# Keep the original entrypoint script that handles commands properly
+# Switch back to archivebox user
+USER archivebox
+
+# Use custom entrypoint that can handle shell commands
+ENTRYPOINT ["dumb-init", "--", "/custom_entrypoint.sh"]
 CMD ["archivebox", "server", "--quick-init", "0.0.0.0:8024"]
