@@ -10,8 +10,8 @@ RUN wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | gpg --d
     apt install -y google-chrome-stable && \
     rm -rf /var/lib/apt/lists/*
 
-# Switch back to archivebox user
-USER archivebox
+# Let the entrypoint script handle user switching
+# USER archivebox
 
-# Keep the original entrypoint, only override the default command
+# Keep the original entrypoint script that handles commands properly
 CMD ["archivebox", "server", "--quick-init", "0.0.0.0:8024"]
